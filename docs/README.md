@@ -4,6 +4,9 @@ This readme will walk you through navigating and building the Spark documentatio
 here with the Spark source code. You can also find documentation specific to release versions of
 Spark at http://spark.apache.org/documentation.html.
 
+这个readme文档将指导您完成导航和构建Spark文档,包括使用Spark源代码。
+你还可以找到特定的Spark发布版本的文档在http://spark.apache.org/documentation.html。
+
 Read on to learn more about viewing documentation in plain text (i.e., markdown) or building the
 documentation yourself. Why build it yourself? So that you have the docs that corresponds to
 whichever version of Spark you currently have checked out of revision control.
