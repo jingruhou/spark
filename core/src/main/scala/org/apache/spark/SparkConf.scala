@@ -43,13 +43,21 @@ import org.apache.spark.util.Utils
  * Note that once a SparkConf object is passed to Spark, it is cloned and can no longer be modified
  * by the user. Spark does not support modifying the configuration at runtime.
  *
+ * SparkConf对象一旦被传递给Spark，它将被克隆，不再被用户修改。
+ * Spark 也不支持在运行时修改配置信息
+ *
  * @param loadDefaults whether to also load values from Java system properties
  */
 class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   import SparkConf._
 
-  /** Create a SparkConf that loads defaults from system properties and the classpath */
+  /** 
+    * Create a SparkConf that loads defaults from system properties and the classpath
+    * 
+    * 从系统属性和classpath里面加载默认配置来创建一个SparkConf
+    */
+
   def this() = this(true)
 
   private val settings = new ConcurrentHashMap[String, String]()
@@ -62,6 +70,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   }
 
   /** Set a configuration variable. */
+  /*设置配置变量*/
   def set(key: String, value: String): SparkConf = {
     if (key == null) {
       throw new NullPointerException("null key")
@@ -77,23 +86,56 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   /**
    * The master URL to connect to, such as "local" to run locally with one thread, "local[4]" to
    * run locally with 4 cores, or "spark://master:7077" to run on a Spark standalone cluster.
+   *
+   * （1）local  :  本地单线程模式 ； 
+   * （2）local[N]  ： 本地N个核模式 ；
+   * （3）spark://master:7077  :  Spark Standalone 集群模式
+   *
+   * setMaster()方法的参数类型为 String类型，例如（1）（2）（3）的样子
+   *
+   * 该方法将我们输入的 String设置为 spark.master的值
+   * spark.master = master: String
    */
   def setMaster(master: String): SparkConf = {
     set("spark.master", master)
   }
 
-  /** Set a name for your application. Shown in the Spark web UI. */
+  /** Set a name for your application. Shown in the Spark web UI. 
+   *
+   * 为我们的application设置一个名字，它将在 Spark web UI 上显示
+   *
+   * setAppName()方法的参数类型为 String类型
+   *
+   * 该方法将我们输入的 String设置为 spark.app.name的值
+   * spark.app.name = name: String
+   */
   def setAppName(name: String): SparkConf = {
     set("spark.app.name", name)
   }
 
-  /** Set JAR files to distribute to the cluster. */
+  /** Set JAR files to distribute to the cluster. 
+   *
+   * 将 jar文件分发到集群上面
+   *
+   * setJars()方法的参数类型为 Seq序列，其序列中的元素类型为 String
+   *
+   * 函数内部通过一个循环来设置 spark.jars的值 ，每一个 jar之间用逗号（，）分开
+   *
+   * 当 jar == null时，打印警告日志信息：没有 jar传递给 SparkContext 结构体。
+   *
+   */
   def setJars(jars: Seq[String]): SparkConf = {
     for (jar <- jars if (jar == null)) logWarning("null jar passed to SparkContext constructor")
     set("spark.jars", jars.filter(_ != null).mkString(","))
   }
 
-  /** Set JAR files to distribute to the cluster. (Java-friendly version.) */
+  /** Set JAR files to distribute to the cluster. (Java-friendly version.) 
+   *
+   * setJars()的 Java版本
+   *
+   * 参数类型为泛型数组，其中数组元素类型为 String
+   *
+   */
   def setJars(jars: Array[String]): SparkConf = {
     setJars(jars.toSeq)
   }
